@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <title>SQLLite DB App</title>
+    <style>
+        body {
+    -webkit-touch-callout: none;                /* prevent callout to copy image, etc when tap to hold */
+    -webkit-text-size-adjust: none;             /* prevent webkit from resizing text to fit */
+    -webkit-user-select: none;                  /* prevent copy paste, to allow, change 'none' to 'text' */
+    background-color:#E4E4E4;
+    background-image:linear-gradient(to bottom, #A7A7A7 0%, #E4E4E4 51%);
+    font-family: system-ui, -apple-system, -apple-system-font, 'Segoe UI', 'Roboto', sans-serif;
+    font-size:12px;
+    height:100vh;
+    margin:0px;
+    padding:0px;
+    /* Padding to avoid the "unsafe" areas behind notches in the screen */
+    padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px);
+    text-transform:uppercase;
+    width:100%;
+}
+    </style>
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+    <script>
+        var db;
+        db = window.openDatabase("trips",  "1.0", "LearnToProgram", 200000);
+        window.onload=function()
+        {
+            document.getElementById('btnSave').addEventListener('click', saveData);
+            db = window.openDatabase("tripDetails",  "1.0", "LearnToProgram", 200000);
+
+        }
+
+        function saveData(e)
+        {
+            db.transaction(saveRecord, onSuccess, onError);
+        }
+
+        function saveRecord(transaction)
+        {
+
+            var name= document.getElementById('tName').value;
+            var destination = document.getElementById('tDestination').value;
+            var date= document.getElementById('tDate').value;
+            var risk = document.getElementById('tRisk').value;
+            var description= document.getElementById('tDescription').value;
+
+            transaction.executeSql('CREATE TABLE IF NOT EXISTS tripList (id INTEGER PRIMARY KEY AUTOINCREMENT, Name TEXT, Destination TEXT,Date TEXT, Risk TEXT, Description TEXT) ');
+
+            var sql= "INSERT INTO tripList (Name,Destination,Date,Risk,Description) VALUES ('" + name +"', '" + destination + "', '" + date +"', '" + risk +"', '" + description +"')";
+
+            transaction.executeSql(sql);
+            transaction.executeSql("SELECT * FROM tripList", [], getSuccess, getError);
+        }
+
+        function getSuccess(tx, result)
+        {
+            var rows = result.rows;
+            for(var x=0; x< rows.length; x++){
+                var name = result.rows[x].Name;
+                var destination = result.rows[x].Destination;
+                var date = result.rows[x].Date;
+                var risk = result.rows[x].Risk;
+                var description = result.rows[x].Description;
+                var out = "<li>Name :" + name + "<br/> Destination:" + destination + "<br/> Date:" + date + "<br/> Risk Assessment:" + risk + "<br/> Description:" + description + "</li>";
+                document.getElementById('members').innerHTML += out ;
+            }
+
+        }
+        function getError(e)
+        {
+             console.log(e);
+        }
+
+        function onSuccess()
+        {
+             console.log("Record Saved");
+        }
+
+        function onError(error)
+        {
+             console.log(error);
+        }
+        </script>
+</head>
+<body>
+<div data-role="page">
+    <div data-role="header"><h1>Welcome To M-Expense App </h1></div>
+    <div data-role="main" class="ui-content">
+        <label for="tName">Enter Trip:</label><br>
+        <input type="text" id="tName" name="tName" required><br>
+        <label for="tDestination">Enter Destination:</label><br>
+        <input type="text" id="tDestination" name="tDestination" required><br>
+        <label for="tDate">Enter Date:</label><br>
+        <input type="date" id="tDate" name="tDate" required><br>
+        <label for="tRisk">Enter Risk Assessment:</label><br>
+        <select id="tRisk" name="tRisk" required>
+            <option>Yes</option>
+            <option>No</option>
+        </select><br>
+        <label for="tDescription">Enter Description:</label><br>
+        <textarea type="text" id="tDescription" name="tDescription" ></textarea><br><br>
+        <button id="btnSave" type="submit">Save</button><br>
+        <ul id="members" data-role="listview">
+        </ul>
+        <script type="text/javascript" src="cordova.js"></script>
+    </div><!-- main-->
+</div><!-- page -->
+</body>
+</html>

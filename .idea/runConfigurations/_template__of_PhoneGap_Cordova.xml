@@ -1,0 +1,15 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="true" type="PhoneGap" factoryName="PhoneGap/Cordova" editBeforeRun="true">
+    <option name="myExecutable" value="/usr/local/bin/cordova" />
+    <option name="myWorkDir" value="$PROJECT_DIR$" />
+    <option name="myCommand" value="emulate" />
+    <option name="myPassParent" value="true" />
+    <option name="myPlatform" value="android" />
+    <option name="myExtraArgs" value="" />
+    <option name="hasTarget" value="false" />
+    <option name="target" value="" />
+    <method v="2">
+      <option name="PhonegapTask" enabled="true" />
+    </method>
+  </configuration>
+</component>
